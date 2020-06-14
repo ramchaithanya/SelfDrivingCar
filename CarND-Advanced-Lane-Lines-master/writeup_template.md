@@ -10,12 +10,18 @@ The goals / steps of this project are the following:
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * Apply a distortion correction to raw images.
+
 * Use color transforms, gradients, etc., to create a thresholded binary image.
+
 * Apply a perspective transform to rectify binary image ("birds-eye view").
+
 * Detect lane pixels and fit to find the lane boundary.
+
 * Determine the curvature of the lane and vehicle position with respect to center.
+
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+
 
 [//]: # (Image References)
 
@@ -42,32 +48,28 @@ You're reading it!
 ### Camera Calibration
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
-
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
-
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
-
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
+The code for this is available in 3 cell of FindingLaneLines.ipynb.
+1) First i checked the corners in the example images present in "camera_cal/"
+2)I have noticed majority of the images are having 6*9 corners(2 images has 5*9 corners)
+3)I followed the method explained in "Calibrating Camera" in the course and implemented chess board corners and calibrating the camera.Using the mtx and dst coefficients got from calibrateCamera opencv function undistorted the image.
+4)Images can be found in "output_images/"
+ 
 
 ![alt text][image1]
 
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
-
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
-
+Using the previously caluculated mtx and distortion coefficients from chessboard images. Undistoreted the image.
+The image can be found in ./output_images/test1_undistort.jpg
+![alt text][./output_images/test1_undistort.jpg]
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
-
-![alt text][image3]
-
+1. Initially only i took Saturation part of HLS image(as i could see lane line visibily) and created a binary output by using only saturation values however when i applied the same on the video face issues.
+2.I made a combined binary image consits of magnititude threshold,direction threshold,S part of hls and absolute sobel threshold.
+3. The threshold parameters i found by trail and error method
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
+1.Manually calculated source and destination points using below formula
 ```python
 src = np.float32(
     [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
@@ -80,35 +82,53 @@ dst = np.float32(
     [(img_size[0] * 3 / 4), img_size[1]],
     [(img_size[0] * 3 / 4), 0]])
 ```
+and got source and destination as below
 
-This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
 | 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
+| 203.33, 720   | 320, 720      |
+| 1126.666, 720 | 960, 720      |
 | 695, 460      | 960, 0        |
-
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+2.I used these source and destination to apply perspective transformation and warp the image
 
 ![alt text][image4]
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+1.Took lower part of warped image and calculated histogram
+2.Took two highest points from histogram as a starting point to determine where the lane pixels are
+3.Iterated through 9 windows to track curvature and followed the steps mentioned in the course Finding the Lines:Sliding Windows
+4.Was able to fit polynomial using polyfit function
 
 ![alt text][image5]
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+1. The radius of curvature of the vehicle is calculated by following classroom material.I have used pixel to meter transformation and recomputed the fit again.Below code demonstrates the radius of curvature calculation
+```python
+    ym_per_pix = 30/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+    y_eval = np.max(ploty)
+    #ploty = np.linspace(0, 719, num=720)# to cover same y-range as image
+    quadratic_coeff = 3e-4 # arbitrary quadratic coefficient
+    leftx = leftx[::-1]  # Reverse to match top-to-bottom in y
+    rightx = rightx[::-1]  # Reverse to match top-to-bottom in y
+    left_fit_cr = np.polyfit(ploty*ym_per_pix, leftx*xm_per_pix, 2)
+    right_fit_cr = np.polyfit(ploty*ym_per_pix, rightx*xm_per_pix, 2)
+    left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
+    right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
+    curvature = (left_curverad + right_curverad)/2
+```
+2.I have used mean of the pixels closest to car to calcualte the center of lane.The center of the image gives postion of the car.The difference between mean of the pixels and the center of the image gives the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+1.Using perspective transform and reversing the source and destination values was able to warp the image back to original image.
 
-![alt text][image6]
+![alt text][./output_images/final_transformed_image.jpg]
 
 ---
 
@@ -116,7 +136,11 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+1.Applied the pipeline to the video and result is below
+
+Here's a [link to my video result](./project_video_output.mp4)
+(./challenge_video_output1.mp4)
+(./arder_challenge_video_output.mp4)
 
 ---
 
@@ -124,4 +148,6 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Although applying the pipeline on the project video gave satisfactory results,however when i applied the same pipeline on challengevideo and harderchallengevideo, the lanes lines were not detected properly.The reason could be bumpy road,shadows on lanes.
+Finding the right thresholding image was the harder part.Finally i combined all the binary images(magnitude,direction,absolutesobel,S part of HLS) to form a combined binary. Although i was not satisfied the combined thresholding image i used the same as my assignment was due for a long time.
+Choosing a smaller section can help in finding the proper lanes for harder challenge video.Choosing better thresholding image can help in challeng video(lane lines was not detected underbridge and shadows is affecting lane lines)
