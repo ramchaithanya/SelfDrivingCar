@@ -11,7 +11,7 @@ I have used the model provided by NVIDIA .I did a slight modification to NVIDIA 
 
 ![alt text]:(https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) "NVIDIA Paper"
 
-![NVIDIA Model]: [./ExampleImages/NVIDIA.jpeg "NVIDIA Model"]
+![alt text]: (https://github.com/ramchaithanya/SelfDrivingCar/blob/master/CarND-Behavioral-Cloning-P3-master/ExampleImages/NVIDIA.jpeg "NVIDIA Model")
 
 #### Data Augmentation ideas
 
