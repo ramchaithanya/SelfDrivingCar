@@ -17,7 +17,7 @@ I have used the model provided by NVIDIA .I did a slight modification to NVIDIA 
 
 I have read the below article and came to understanding how to augment my data
 
-![Data Augmentation][(https://junshengfu.github.io/driving-behavioral-cloning/) "Behavior Cloning Article"]
+[Data Augmentation!][(https://junshengfu.github.io/driving-behavioral-cloning/) "Behavior Cloning Article"]
 
 #### 2. Attempts to reduce overfitting in the model
 
@@ -38,7 +38,7 @@ I have started with 3 epochs which didnt give a fruitful output,later i have inc
 #### Validation data Split
 I have read in many articles that a split 80:20 or 90:10 is a good training and validation data split.So i choose 80% of training data and 20% of validation data.Below is the link where i have read about good training and validataion data split
 
-![Train_Validation](https://stackoverflow.com/questions/13610074/is-there-a-rule-of-thumb-for-how-to-divide-a-dataset-into-training-and-validatio) "Optimal Training and Validation data split"
+[Train_Validation!](https://stackoverflow.com/questions/13610074/is-there-a-rule-of-thumb-for-how-to-divide-a-dataset-into-training-and-validatio) "Optimal Training and Validation data split"
 
 #### Loss function
 I have used most commonly used loss function as it gave me satisfactory results i didn't research further for other loss functions
