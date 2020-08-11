@@ -45,7 +45,7 @@ I have followed lenet-5 architecture with some modifications i.e, i have added e
 
 Below is the image of lenet Architecture
 
-![Lenet Architecture] (./Output/Lenet_Arch.png)
+![Lenet Architecture](./Output/Lenet_Arch.png)
 
 My final model consisted of the following layers:
 
@@ -109,11 +109,11 @@ I have read lenet architercure is an excellent first architecture like 'hello wo
 
 Here are five German traffic signs that I took from web:
 
-![60 kms] (./webimages/60_kmh.jpg)
-![stop_sign] (./webimages/stop_sign.jpg)
-![yield_sign] (./webimages/yield_sign.jpg)
-![left_turn] (./webimages/left_turn.jpg)
-![road_work] (./webimages/road_work.jpg)
+![60 kms](./webimages/60_kmh.jpg)
+![stop_sign](./webimages/stop_sign.jpg)
+![yield_sign](./webimages/yield_sign.jpg)
+![left_turn](./webimages/left_turn.jpg)
+![road_work](./webimages/road_work.jpg)
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -177,7 +177,7 @@ Probabilities:
  In the below image the top 5 softmax probabilities has been captured.For correct predictions the softmax probabilites is 100%.
  For incorrect predictions i can see atleast in the top 5 probilities actual image is listed for 1 image(60_kmh) and for other image prediction(road_work) is totally wrong.
  
- ![SoftMax Probabilities] (./Output/softmax.png)
+ ![SoftMax Probabilities](./Output/softmax.png)
 
 ### Additional Notes
 For previous submission i have added few chanes releated to image preprocessing,epochs,changing how normalization is done,adding extra convulutional layer and two drop out layers to my model.I belive this has improved my accuracy from 40%(previous submission) to 60%(Current submission)
