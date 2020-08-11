@@ -1,125 +1,105 @@
-# Behavioral Cloning Project
+# **Behavioral Cloning** 
 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+### Model Architecture and Training Strategy
 
-Overview
----
-This repository contains starting files for the Behavioral Cloning Project.
+#### 1. An appropriate model architecture has been employed
 
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. You will train, validate and test a model using Keras. The model will output a steering angle to an autonomous vehicle.
+I have used multiple sources for this assignment.
 
-We have provided a simulator where you can steer a car around a track for data collection. You'll use image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
+#### Model Achitecture
+I have used the model provided by NVIDIA .I did a slight modification to NVIDIA model i.e i have modified the model to take 64*64 instead of 66*200.Further model details has been mentioned below.
 
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
+[NVIDIA Paper!](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf)
 
-To meet specifications, the project will require submitting five files: 
-* model.py (script used to create and train the model)
-* drive.py (script to drive the car - feel free to modify this file)
-* model.h5 (a trained Keras model)
-* a report writeup file (either markdown or pdf)
-* video.mp4 (a video recording of your vehicle driving autonomously around the track for at least one full lap)
+![NVIDIA](./ExampleImages/NVIDIA.jpeg)
 
-This README file describes how to output the video in the "Details About Files In This Directory" section.
+#### Data Augmentation ideas
 
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/432/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
+I have read the below article and came to understanding how to augment my data
 
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
+[Data Augmentation!](https://junshengfu.github.io/driving-behavioral-cloning/)
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
+#### 2. Attempts to reduce overfitting in the model
 
-The Project
----
-The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior 
-* Design, train and validate a model that predicts a steering angle from image data
-* Use the model to drive the vehicle autonomously around the first track in the simulator. The vehicle should remain on the road for an entire loop around the track.
-* Summarize the results with a written report
+Two dropout layer has been added with probability of setting each input to the layer to zero at 20% to overcome overfitting
 
-### Dependencies
-This lab requires:
+#### 3. Model parameter tuning
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+The model used an adam optimizer with learning rate of 0.0001.
+No of EPOCHS = 10
+Validation data Split = 0.2
+Batch Size = 32
+loss = mse
+learning rate = 0.0001
+Optimize = Adam
 
-The lab enviroment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+#### Finalizing Epochs
+I have started with 3 epochs which didnt give a fruitful output,later i have increased to 5 epochs and i could see some improvements but still the results are not satisfactory.Then i have increased to 8 epochs and i could see the model was working fine,however at some image the car is moving out of confined lines.So finally i have increased to 10 epochs which gave me satisfactory results.
+#### Validation data Split
+I have read in many articles that a split 80:20 or 90:10 is a good training and validation data split.So i choose 80% of training data and 20% of validation data.Below is the link where i have read about good training and validataion data split
 
-The following resources can be found in this github repository:
-* drive.py
-* video.py
-* writeup_template.md
+[Optimal Training and Validation data split!](https://stackoverflow.com/questions/13610074/is-there-a-rule-of-thumb-for-how-to-divide-a-dataset-into-training-and-validatio)
 
-The simulator can be downloaded from the classroom. In the classroom, we have also provided sample data that you can optionally use to help train your model.
+#### Loss function
+I have used most commonly used loss function as it gave me satisfactory results i didn't research further for other loss functions
 
-## Details About Files In This Directory
+#### Optimizer and Learning rate
+I have used Adam Optimizer with a learning rate of 0.001(i reused same learning rate as my previous assignment)
 
-### `drive.py`
+#### 4. Appropriate training data
 
-Usage of `drive.py` requires you have saved the trained model as an h5 file, i.e. `model.h5`. See the [Keras documentation](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model) for how to create this file using the following command:
-```sh
-model.save(filepath)
-```
+I have used dataset provided by udacity to train my model.Using Sklearn library i have split training and validation dataset,splitting 20% for validation and remaing for training data.Instead of inserting all the images into numpy array and performing model fit,i chose to generate the dataset into batches and each batch containing 32 images.This helped in consuming less memory in RAM.
 
-Once the model has been saved, it can be used with drive.py using this command:
+### Model Architecture and Training Strategy
 
-```sh
-python drive.py model.h5
-```
+#### 1. Data Preprocessing
+Below are my image preprocessing techniques i have applied.
 
-The above command will load the trained model and use the model to make predictions on individual images in real-time and send the predicted angle back to the server via a websocket connection.
+1.Image normalization technique which is taken care by lambda layer in my model.
+(Lambda(lambda x: x / 128.0 - 1., input_shape=(64,64,3))
+2.As part of image preprocessing i have performed 3 steps. 
+  * Cropping the image to train ony region of interest
+  * Resize the image to 64 * 64, this will help the train the model faster and will help in optimizing my final model
+  * Converted from RGB to YUV as mentioned in the NVIDIA model.
+3.Flipped the image horizontally and changed the steering angle value by a factor of -1.
+4.Since we have images from three cameras(left,center and right),i have used a correction factor of 0.2.For left images steering angle with a correction factor of 0.2 has been added and for right images steering angle with correction factor 0f 0.2 has been subtracted.
 
-Note: There is known local system's setting issue with replacing "," with "." when using drive.py. When this happens it can make predicted steering values clipped to max/min values. If this occurs, a known fix for this is to add "export LANG=en_US.utf8" to the bashrc file.
+![preprocessed_image](./ExampleImages/preprocessed_image.png)
 
-#### Saving a video of the autonomous agent
+#### 2. Final Model Architecture
 
-```sh
-python drive.py model.h5 run1
-```
+I did some modifications to NVIDIA model and final model is as below.
 
-The fourth argument, `run1`, is the directory in which to save the images seen by the agent. If the directory already exists, it'll be overwritten.
+| Layer (type)        	|     Output Shape		|    Param #	|
+|:---------------------:|:---------------------:|--------------:| 
+| lambda_3 (Lambda)     | (None, 64, 64, 3) 	|   0     		|
+| conv2d (Conv2D)      	| (None, 30, 30, 24)   	|   1824   		|
+| conv2d_1 (Conv2D)		| (None, 13, 13, 36) 	|   21636  		|
+| conv2d_2 (Conv2D)    	| (None, 5, 5, 48)    	|   43248  		|
+| conv2d_3 (Conv2D)	    | (None, 3, 3, 64)		|   27712  		|
+| conv2d_4 (Conv2D)		| (None, 1, 1, 64) 		|   36928  		|
+| flatten (Flatten)		| (None, 64)           	|   0    		|
+| dense (Dense)  	    | (None, 1164)       	|   75660  		|
+| dropout (Dropout)		| (None, 1164)  		|   0     		|
+| dense_1 (Dense) 		| (None, 100)			|   116500 		|
+| dropout_1 (Dropout)	| (None, 100)			|   0     		|
+| dense_2 (Dense)  		| (None, 50)			|   5050   		|
+| dense_3 (Dense) 		| (None, 10)			|   510    		|
+| dense_4 (Dense)		| (None, 1)				|   11    		|
 
-```sh
-ls run1
+Total params: 329,079
+Trainable params: 329,079
+Non-trainable params: 0
 
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_424.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_451.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_477.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_528.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_573.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_618.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_697.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_723.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_749.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_817.jpg
-...
-```
 
-The image file name is a timestamp of when the image was seen. This information is used by `video.py` to create a chronological video of the agent driving.
+* The sequential model starts with a lambda layer which performs image normlization.
+* The model has total of 5 convolutional layers.The first 3 convolution layers has 2*2 stride and 5*5 kernel and remaining 2 layers are non strided convolution layer with 3*3 kernel.
+* For all 5 convolution layer a elu activation function has been added.
+* After that i have applied a flattening layer to create a single long feature vector to be used for dense layers.
+* Next i have added 5 fully connected layers with output 1164,100,50,10 and 1 respectively.
+* For the first two fully connected layers i have added a droput layers with probability of 80% for picking a input
+* The model has been compiled with Adam optimize with learning rate of 0.0001 with loss function "mean square error(mse)".
 
-### `video.py`
+The Video output of the Autonomous car driven model can be found below
 
-```sh
-python video.py run1
-```
-
-Creates a video based on images found in the `run1` directory. The name of the video will be the name of the directory followed by `'.mp4'`, so, in this case the video will be `run1.mp4`.
-
-Optionally, one can specify the FPS (frames per second) of the video:
-
-```sh
-python video.py run1 --fps 48
-```
-
-Will run the video at 48 FPS. The default FPS is 60.
-
-#### Why create a video
-
-1. It's been noted the simulator might perform differently based on the hardware. So if your model drives succesfully on your machine it might not on another machine (your reviewer). Saving a video is a solid backup in case this happens.
-2. You could slightly alter the code in `drive.py` and/or `video.py` to create a video of what your model sees after the image is processed (may be helpful for debugging).
-
-### Tips
-- Please keep in mind that training images are loaded in BGR colorspace using cv2 while drive.py load images in RGB to predict the steering angles.
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+[Evaluation Video!](https://www.youtube.com/watch?v=jFf-MQceb2E)
