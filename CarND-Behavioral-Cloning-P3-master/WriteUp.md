@@ -11,7 +11,7 @@ I have used the model provided by NVIDIA .I did a slight modification to NVIDIA 
 
 [NVIDIA Paper!](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf)
 
-![NVIDIA](https://user-images.githubusercontent.com/19513148/89924074-20c37a00-dc1f-11ea-9980-04f38e6b8757.jpeg)
+![NVIDIA](./ExampleImages/NVIDIA.jpeg)
 
 #### Data Augmentation ideas
 
@@ -64,7 +64,7 @@ Below are my image preprocessing techniques i have applied.
 3.Flipped the image horizontally and changed the steering angle value by a factor of -1.
 4.Since we have images from three cameras(left,center and right),i have used a correction factor of 0.2.For left images steering angle with a correction factor of 0.2 has been added and for right images steering angle with correction factor 0f 0.2 has been subtracted.
 
-![preprocessed_image](https://user-images.githubusercontent.com/19513148/89924541-cd9df700-dc1f-11ea-9b23-5b91351fd7aa.png)
+![preprocessed_image](./ExampleImages/preprocessed_image.png)
 
 #### 2. Final Model Architecture
 
