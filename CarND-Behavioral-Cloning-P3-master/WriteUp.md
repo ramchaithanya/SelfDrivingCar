@@ -9,15 +9,15 @@ I have used multiple sources for this assignment.
 #### Model Achitecture
 I have used the model provided by NVIDIA .I did a slight modification to NVIDIA model i.e i have modified the model to take 64*64 instead of 66*200.Further model details has been mentioned below.
 
-[Nvidia Paper]:(https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) "NVIDIA Paper"
+[Nvidia Paper]:[(https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) "NVIDIA Paper"]
 
-[NVIDIA Model]: ./ExampleImages/NVIDIA.jpeg "NVIDIA Model"
+[NVIDIA Model]: [./ExampleImages/NVIDIA.jpeg "NVIDIA Model"]
 
 #### Data Augmentation ideas
 
 I have read the below article and came to understanding how to augment my data
 
-[Data Augmentation]: (https://junshengfu.github.io/driving-behavioral-cloning/) "Behaviora Cloning Article"
+[Data Augmentation]: [(https://junshengfu.github.io/driving-behavioral-cloning/) "Behavior Cloning Article"]
 
 #### 2. Attempts to reduce overfitting in the model
 
@@ -38,7 +38,7 @@ I have started with 3 epochs which didnt give a fruitful output,later i have inc
 #### Validation data Split
 I have read in many articles that a split 80:20 or 90:10 is a good training and validation data split.So i choose 80% of training data and 20% of validation data.Below is the link where i have read about good training and validataion data split
 
-[Train_Validation]: (https://stackoverflow.com/questions/13610074/is-there-a-rule-of-thumb-for-how-to-divide-a-dataset-into-training-and-validatio) "Optimal Training and Validation data split"
+[Train_Validation]: [(https://stackoverflow.com/questions/13610074/is-there-a-rule-of-thumb-for-how-to-divide-a-dataset-into-training-and-validatio) "Optimal Training and Validation data split"]
 
 #### Loss function
 I have used most commonly used loss function as it gave me satisfactory results i didn't research further for other loss functions
@@ -64,7 +64,7 @@ Below are my image preprocessing techniques i have applied.
 3.Flipped the image horizontally and changed the steering angle value by a factor of -1.
 4.Since we have images from three cameras(left,center and right),i have used a correction factor of 0.2.For left images steering angle with a correction factor of 0.2 has been added and for right images steering angle with correction factor 0f 0.2 has been subtracted.
 
-[Preprocessing Steps]: ./ExampleImages/preprocessed_image.png "Preprocessed Steps"
+[Preprocessing Steps]: [./ExampleImages/preprocessed_image.png "Preprocessed Steps"]
 
 #### 2. Final Model Architecture
 
@@ -108,4 +108,4 @@ dense_19 (Dense)             (None, 1)                 11
 
 The Video output of the Autonomous car driven model can be found below
 
-[Video]: ./sim12.mp4 "Behaviour Cloning Video Output"
+[Video]: [./Model_Outputs/sim12.mp4 "Behaviour Cloning Video Output"]

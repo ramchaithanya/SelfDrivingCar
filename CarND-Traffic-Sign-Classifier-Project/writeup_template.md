@@ -21,7 +21,7 @@
 
 As we can see from the charts,samples vary as high as ~2000 to as low as 200~.Predicting traffic signs with low samples may not be accurate.
  
-[image1]:./Output/exploration_data_set.png "Dataset Exploration"
+[image1]:[./Output/exploration_data_set.png "Dataset Exploration"]
 
 
 ### Design and Test a Model Architecture
@@ -36,7 +36,7 @@ As we can see from the charts,samples vary as high as ~2000 to as low as 200~.Pr
 
 * Then i have used sklearn shuffle to shuffle the images randomly to
 
-[image2]: ./Output/original_gray_normalized.png "Gray Normalized Image"
+[image2]: [./Output/original_gray_normalized.png "Gray Normalized Image"]
 
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
@@ -45,7 +45,7 @@ I have followed lenet-5 architecture with some modifications i.e, i have added e
 
 Below is the image of lenet Architecture
 
-[image3]: ./Output/Lenet_Arch.png "Lenet Architecture"
+[image3]: [./Output/Lenet_Arch.png "Lenet Architecture"]
 
 My final model consisted of the following layers:
 
@@ -109,11 +109,11 @@ I have read lenet architercure is an excellent first architecture like 'hello wo
 
 Here are five German traffic signs that I took from web:
 
-[image4]: ./webimages/60_kmh.jpg "60 kms"
-[image5]: ./webimages/stop_sign.jpg "stop_sign"
-[image6]: ./webimages/yield_sign.jpg "yield_sign"
-[image7]: ./webimages/left_turn.jpg "left_turn"
-[image8]: ./webimages/road_work.jpg "road_work"
+[image4]: [./webimages/60_kmh.jpg "60 kms"]
+[image5]: [./webimages/stop_sign.jpg "stop_sign"]
+[image6]: [./webimages/yield_sign.jpg "yield_sign"]
+[image7]: [./webimages/left_turn.jpg "left_turn"]
+[image8]: [./webimages/road_work.jpg "road_work"]
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -177,7 +177,7 @@ Probabilities:
  In the below image the top 5 softmax probabilities has been captured.For correct predictions the softmax probabilites is 100%.
  For incorrect predictions i can see atleast in the top 5 probilities actual image is listed for 1 image(60_kmh) and for other image prediction(road_work) is totally wrong.
  
- [image9]: ./Output/softmax.png "SoftMax Probabilities"
+ [image9]: [./Output/softmax.png "SoftMax Probabilities"]
 
 ### Additional Notes
 For previous submission i have added few chanes releated to image preprocessing,epochs,changing how normalization is done,adding extra convulutional layer and two drop out layers to my model.I belive this has improved my accuracy from 40%(previous submission) to 60%(Current submission)
