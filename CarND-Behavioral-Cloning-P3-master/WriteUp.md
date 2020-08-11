@@ -70,53 +70,27 @@ Below are my image preprocessing techniques i have applied.
 
 I did some modifications to NVIDIA model and final model is as below.
 
-lambda_3 (Lambda)            (None, 64, 64, 3)         0         
-_________________________________________________________________
-conv2d_15 (Conv2D)           (None, 30, 30, 24)        1824      
-_________________________________________________________________
-conv2d_16 (Conv2D)           (None, 13, 13, 36)        21636     
-_________________________________________________________________
-conv2d_17 (Conv2D)           (None, 5, 5, 48)          43248     
-_________________________________________________________________
-conv2d_18 (Conv2D)           (None, 3, 3, 64)          27712     
-_________________________________________________________________
-conv2d_19 (Conv2D)           (None, 1, 1, 64)          36928     
-_________________________________________________________________
-flatten_3 (Flatten)          (None, 64)                0         
-_________________________________________________________________
-dense_15 (Dense)             (None, 1164)              75660     
-_________________________________________________________________
-dropout_11 (Dropout)         (None, 1164)              0         
-_________________________________________________________________
-dense_16 (Dense)             (None, 100)               116500    
-_________________________________________________________________
-dropout_12 (Dropout)         (None, 100)               0         
-_________________________________________________________________
-dense_17 (Dense)             (None, 50)                5050      
-_________________________________________________________________
-dense_18 (Dense)             (None, 10)                510       
-_________________________________________________________________
-dense_19 (Dense)             (None, 1)                 11     
+| Layer (type)        	|     Output Shape		|    Param #	|
+|:---------------------:|:---------------------:|--------------:| 
+| lambda_3 (Lambda)     | (None, 64, 64, 3) 	|   0     		|
+| conv2d (Conv2D)      	| (None, 30, 30, 24)   	|   1824   		|
+| conv2d_1 (Conv2D)		| (None, 13, 13, 36) 	|   21636  		|
+| conv2d_2 (Conv2D)    	| (None, 5, 5, 48)    	|   43248  		|
+| conv2d_3 (Conv2D)	    | (None, 3, 3, 64)		|   27712  		|
+| conv2d_4 (Conv2D)		| (None, 1, 1, 64) 		|   36928  		|
+| flatten (Flatten)		| (None, 64)           	|   0    		|
+| dense (Dense)  	    | (None, 1164)       	|   75660  		|
+| dropout (Dropout)		| (None, 1164)  		|   0     		|
+| dense_1 (Dense) 		| (None, 100)			|   116500 		|
+| dropout_1 (Dropout)	| (None, 100)			|   0     		|
+| dense_2 (Dense)  		| (None, 50)			|   5050   		|
+| dense_3 (Dense) 		| (None, 10)			|   510    		|
+| dense_4 (Dense)		| (None, 1)				|   11    		|
 
-| Layer         		|     Description	        					|    Param #
-|:---------------------:|:---------------------------------------------:| 
-| lambda_3 (Lambda)           		| (None, 64, 64, 3)    							| 0
-| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
-| Relu					| Relu Activation								|
-| Max pooling	      	| 2x2 stride,  outputs 14x14x6, valid padding	|
-| Convolution 5x5	    | output 10x10x16								|
-| Relu           		| Relu Activation								|
-| Max pooling			| 2x2 string,valid padding,outputs 5x5x16		|
-| Convolution 5x5	    | output 1x1x400								|
-| Relu           		| Relu Activation								|
-| Flatten				| outputs 400									|
-| Fully connected		| outputs 120									|
-| Relu          		| Relu Activation								|
-| Drop Out      		| Keep Probability 80%							|
-| Fully connected		| outputs 84									|
-| Relu          		| Relu Activation								|
-| Drop Out      		| Keep Probability 80%							|
-| Fully connected		| outputs 43									|
+Total params: 329,079
+Trainable params: 329,079
+Non-trainable params: 0
+
 
 * The sequential model starts with a lambda layer which performs image normlization.
 * The model has total of 5 convolutional layers.The first 3 convolution layers has 2*2 stride and 5*5 kernel and remaining 2 layers are non strided convolution layer with 3*3 kernel.
