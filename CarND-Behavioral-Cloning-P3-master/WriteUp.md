@@ -64,7 +64,7 @@ Below are my image preprocessing techniques i have applied.
 3.Flipped the image horizontally and changed the steering angle value by a factor of -1.
 4.Since we have images from three cameras(left,center and right),i have used a correction factor of 0.2.For left images steering angle with a correction factor of 0.2 has been added and for right images steering angle with correction factor 0f 0.2 has been subtracted.
 
-![Preprocessing Steps]: [./ExampleImages/preprocessed_image.png "Preprocessed Steps"]
+![preprocessed_image](https://user-images.githubusercontent.com/19513148/89924541-cd9df700-dc1f-11ea-9b23-5b91351fd7aa.png)
 
 #### 2. Final Model Architecture
 
