@@ -17,7 +17,7 @@ I have used the model provided by NVIDIA .I did a slight modification to NVIDIA 
 
 I have read the below article and came to understanding how to augment my data
 
-[Data Augmentation!](https://junshengfu.github.io/driving-behavioral-cloning/
+[Data Augmentation!](https://junshengfu.github.io/driving-behavioral-cloning/)
 
 #### 2. Attempts to reduce overfitting in the model
 
