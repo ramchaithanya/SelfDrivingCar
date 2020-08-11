@@ -96,7 +96,27 @@ dense_17 (Dense)             (None, 50)                5050
 _________________________________________________________________
 dense_18 (Dense)             (None, 10)                510       
 _________________________________________________________________
-dense_19 (Dense)             (None, 1)                 11        
+dense_19 (Dense)             (None, 1)                 11     
+
+| Layer         		|     Description	        					|    Param #
+|:---------------------:|:---------------------------------------------:| 
+| lambda_3 (Lambda)           		| (None, 64, 64, 3)    							| 0
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| Relu					| Relu Activation								|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6, valid padding	|
+| Convolution 5x5	    | output 10x10x16								|
+| Relu           		| Relu Activation								|
+| Max pooling			| 2x2 string,valid padding,outputs 5x5x16		|
+| Convolution 5x5	    | output 1x1x400								|
+| Relu           		| Relu Activation								|
+| Flatten				| outputs 400									|
+| Fully connected		| outputs 120									|
+| Relu          		| Relu Activation								|
+| Drop Out      		| Keep Probability 80%							|
+| Fully connected		| outputs 84									|
+| Relu          		| Relu Activation								|
+| Drop Out      		| Keep Probability 80%							|
+| Fully connected		| outputs 43									|
 
 * The sequential model starts with a lambda layer which performs image normlization.
 * The model has total of 5 convolutional layers.The first 3 convolution layers has 2*2 stride and 5*5 kernel and remaining 2 layers are non strided convolution layer with 3*3 kernel.
