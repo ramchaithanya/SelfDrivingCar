@@ -9,7 +9,7 @@ I have used multiple sources for this assignment.
 #### Model Achitecture
 I have used the model provided by NVIDIA .I did a slight modification to NVIDIA model i.e i have modified the model to take 64*64 instead of 66*200.Further model details has been mentioned below.
 
-![Nvidia Paper]:[(https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) "NVIDIA Paper"]
+![alt text]:(https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) "NVIDIA Paper"
 
 ![NVIDIA Model]: [./ExampleImages/NVIDIA.jpeg "NVIDIA Model"]
 
