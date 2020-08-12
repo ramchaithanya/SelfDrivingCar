@@ -21,7 +21,7 @@ I have read the below article and came to understanding how to augment my data
 
 #### 2. Attempts to reduce overfitting in the model
 
-Two dropout layer has been added with probability of setting each input to the layer to zero at 20% to overcome overfitting
+Two dropout layer has been added with probability of setting each input to the layer to zero at 20% to overcome overfitting.Initially i have added 4 dropout layers,each dropout layer after a fully connected layer.However, i have increased the epochs as high as 50,still the car is moving out of track.Same with 3 dropout layers. Finally i found out that 2 droput layers works for my model.
 
 #### 3. Model parameter tuning
 
@@ -34,7 +34,7 @@ learning rate = 0.0001
 Optimize = Adam
 
 #### Finalizing Epochs
-I have started with 3 epochs which didnt give a fruitful output,later i have increased to 5 epochs and i could see some improvements but still the results are not satisfactory.Then i have increased to 8 epochs and i could see the model was working fine,however at some image the car is moving out of confined lines.So finally i have increased to 10 epochs which gave me satisfactory results.
+I have started with 3 epochs which didnt give a fruitful output,later i have increased to 5 epochs and i could see some improvements but still the results are not satisfactory.Then i have increased to 8 epochs and i could see the model was working fine,however at some areas the car is moving out of confined lines.So finally i have increased to 10 epochs which gave me satisfactory results.
 #### Validation data Split
 I have read in many articles that a split 80:20 or 90:10 is a good training and validation data split.So i choose 80% of training data and 20% of validation data.Below is the link where i have read about good training and validataion data split
 
@@ -55,14 +55,14 @@ I have used dataset provided by udacity to train my model.Using Sklearn library 
 #### 1. Data Preprocessing
 Below are my image preprocessing techniques i have applied.
 
-1.Image normalization technique which is taken care by lambda layer in my model.
+* Image normalization technique which is taken care by lambda layer in my model.
 (Lambda(lambda x: x / 128.0 - 1., input_shape=(64,64,3))
-2.As part of image preprocessing i have performed 3 steps. 
-  * Cropping the image to train ony region of interest
-  * Resize the image to 64 * 64, this will help the train the model faster and will help in optimizing my final model
-  * Converted from RGB to YUV as mentioned in the NVIDIA model.
-3.Flipped the image horizontally and changed the steering angle value by a factor of -1.
-4.Since we have images from three cameras(left,center and right),i have used a correction factor of 0.2.For left images steering angle with a correction factor of 0.2 has been added and for right images steering angle with correction factor 0f 0.2 has been subtracted.
+* As part of image preprocessing i have performed 3 steps. 
+   * Cropping the image to train only on region of interest
+   * Resize the image to 64 * 64, this will help the train the model faster and will help in optimizing my final model
+   * Converted from RGB to YUV as mentioned in the NVIDIA model.
+* Flipped the image horizontally and changed the steering angle value by a factor of -1.
+* Since we have images from three cameras(left,center and right),i have used a correction factor of 0.2 i.e,for images taken by left camera,steering angle with a correction factor of 0.2 has been added and for images taken by right camera,steering angle with correction factor 0f 0.2 has been subtracted.
 
 ![preprocessed_image](./ExampleImages/preprocessed_image.png)
 
