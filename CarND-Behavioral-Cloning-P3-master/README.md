@@ -19,6 +19,12 @@ I have read the below article and came to understanding how to augment my data
 
 [Data Augmentation!](https://junshengfu.github.io/driving-behavioral-cloning/)
 
+#### Data Exploration
+
+From the steering angles in the below image,it is very clear that the data set is biased towards turning left.To balance it,for each training image a horizontal flip is done and added to numpy array so that model will be trained for that image.
+
+![Steering Angles Data](./ExampleImages/SteeringAngleDistribution.png)
+
 #### 2. Attempts to reduce overfitting in the model
 
 Two dropout layer has been added with probability of setting each input to the layer to zero at 20% to overcome overfitting.Initially i have added 4 dropout layers,each dropout layer after a fully connected layer.However, i have increased the epochs as high as 50,still the car is moving out of track.Same with 3 dropout layers. Finally i found out that 2 droput layers works for my model.
