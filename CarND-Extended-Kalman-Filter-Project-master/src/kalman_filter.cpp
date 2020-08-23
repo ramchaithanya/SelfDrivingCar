@@ -26,80 +26,47 @@ void KalmanFilter::Predict() {
   /**
    * TODO: predict the state
    */
-#if 0
   x_ = F_ * x_;
   MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
-#endif
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
   /**
    * TODO: update the state by using Kalman Filter equations
    */
-#if 0
-    for (unsigned int n = 0; n < measurements.size(); ++n) {
-
-
-
-    VectorXd z = measurements[n];
-
-    // TODO: YOUR CODE HERE
-
-    /**
-
-     * KF Measurement update step
-
-     */
-
-    VectorXd y = z - H * x;
-
-    MatrixXd Ht = H.transpose();
-
-    MatrixXd S = H * P * Ht + R;
-
-    MatrixXd Si = S.inverse();
-
-    MatrixXd K =  P * Ht * Si;
-
-
-
-    // new state
-
-    x = x + (K * y);
-
-    P = (I - K * H) * P;
-
-
-
-    /**
-
-     * KF Prediction step
-
-     */
-
-    x = F * x + u;
-
-    MatrixXd Ft = F.transpose();
-
-    P = F * P * Ft + Q;
-
-
-
-    cout << "x=" << endl <<  x << endl;
-
-    cout << "P=" << endl <<  P << endl;
-
-  }
-#endif
+  VectorXd y = z - (H_ * x_);
+  CommonUpdate(y);
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
    * TODO: update the state by using Extended Kalman Filter equations
    */
-  VectorXd z_pred = H_ * x_;
-  VectorXd y = z - z_pred;
+  //Using formula from Sensor Fusion EKF reference,Section-7 Radar Measurements
+  double rho     = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
+  double theta   = atan2(x_(1), x_(0));
+  double rho_dot = (x_(0)*x_(2) + x_(1)*x_(3)) / rho;
+
+  VectorXd h = VectorXd(3);
+
+  h << rho, theta, rho_dot;
+
+  VectorXd y = z - h;
+
+  //Normalizing Angle
+  while(y(1) <= -M_PI)
+  {
+      y(1) += M_PI;
+  }
+  while(y(1) > M_PI)
+  {
+      y(1) -= M_PI;
+  }
+  CommonUpdate(y);
+}
+
+void KalmanFilter::CommonUpdate(const VectorXd &y) {
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
@@ -110,5 +77,5 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * H_) * P_;
+  P_ = (I - K * H_) * P_;  
 }

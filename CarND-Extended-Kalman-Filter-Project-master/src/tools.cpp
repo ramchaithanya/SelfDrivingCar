@@ -32,7 +32,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
       || estimations.size() == 0) {
 
-    cout << "Invalid estimation or ground_truth data" << endl;
+    std::cout << "Invalid estimation or ground_truth data" << std::endl;
 
     return rmse;
 
@@ -82,7 +82,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
    * TODO:
    * Calculate a Jacobian here.
    */
-	MatrixXd Hj(3,4);
+    MatrixXd Hj(3,4);
   // recover state parameters
   float px = x_state(0);
   float py = x_state(1);
@@ -96,7 +96,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
   // check division by zero
   if (fabs(c1) < 0.0001) {
-    cout << "CalculateJacobian () - Error - Division by Zero" << endl;
+    std::cout << "CalculateJacobian () - Error - Division by Zero" << std::endl;
     return Hj;
   }
 
