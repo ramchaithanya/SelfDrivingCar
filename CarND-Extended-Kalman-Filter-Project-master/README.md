@@ -7,7 +7,7 @@ Code has been compiled without any errors.Below is the output of build.
 
 ![Compilation](./Images/Compilation.png)
 
-The binary can be found [here!](./build/ExtendedKF)
+The binary can be found "./build/ExtendedKF"
 
 ### Your algorithm will be run against Dataset 1 in the simulator which is the same as "data/obj_pose-laser-radar-synthetic-input.txt" in the repository. We'll collect the positions that your algorithm outputs and compare them to ground truth data. Your px, py, vx, and vy RMSE should be less than or equal to the values [.11, .11, 0.52, 0.52].
 
