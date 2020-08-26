@@ -22,20 +22,26 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   Q_ = Q_in;
 }
 
-void KalmanFilter::Predict() {
-  /**
-   * TODO: predict the state
-   */
+void KalmanFilter::Predict() 
+{
   x_ = F_ * x_;
   MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
 }
 
-void KalmanFilter::Update(const VectorXd &z) {
-  /**
-   * TODO: update the state by using Kalman Filter equations
-   */
+void KalmanFilter::Update(const VectorXd &z) 
+{
+  //update the state by using Kalman Filter equations
   VectorXd y = z - (H_ * x_);
+  //Normalizing Angle
+  while(y(1) <= -M_PI)
+  {
+      y(1) += M_PI;
+  }
+  while(y(1) > M_PI)
+  {
+      y(1) -= M_PI;
+  }
   CommonUpdate(y);
 }
 
@@ -44,16 +50,15 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
    * TODO: update the state by using Extended Kalman Filter equations
    */
   //Using formula from Sensor Fusion EKF reference,Section-7 Radar Measurements
-  double rho     = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
-  double theta   = atan2(x_(1), x_(0));
-  double rho_dot = (x_(0)*x_(2) + x_(1)*x_(3)) / rho;
-
+  float rho     = sqrt(pow(x_(0),2) + pow(x_(1),2));
+  float theta   = atan2(x_(1), x_(0));
+  //Handle divide by zero error
+  if(fabs(rho) < 0.0001)
+      rho = 0.0001;
+  float rho_dot = (x_(0)*x_(2) + x_(1)*x_(3)) / rho;
   VectorXd h = VectorXd(3);
-
   h << rho, theta, rho_dot;
-
   VectorXd y = z - h;
-
   //Normalizing Angle
   while(y(1) <= -M_PI)
   {
@@ -67,6 +72,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 }
 
 void KalmanFilter::CommonUpdate(const VectorXd &y) {
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
