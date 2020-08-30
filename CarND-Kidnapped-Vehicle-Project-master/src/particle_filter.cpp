@@ -71,15 +71,12 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
       
       if(fabs(yaw_rate) < 0.00001)
       {
-          particles[i].x += velocity * delta_t * cos(particles[i].theta);
-          particles[i].y += velocity * delta_t * sin(particles[i].theta);
+          yaw_rate = 0.00001;
       }
-      else
-      {
-          particles[i].x += velocity/yaw_rate * (sin(particles[i].theta + yaw_rate*delta_t) - sin(particles[i].theta));
-          particles[i].y += velocity/yaw_rate * (cos(particles[i].theta) - cos(particles[i].theta + yaw_rate*delta_t));
-          particles[i].theta += yaw_rate * delta_t;
-      }
+      particles[i].x += velocity/yaw_rate * (sin(particles[i].theta + yaw_rate*delta_t) - sin(particles[i].theta));
+      particles[i].y += velocity/yaw_rate * (cos(particles[i].theta) - cos(particles[i].theta + yaw_rate*delta_t));
+      particles[i].theta += yaw_rate * delta_t;
+
       particles[i].x += dist_x(m_gen);
       particles[i].y += dist_y(m_gen);
       particles[i].theta += dist_theta(m_gen);
@@ -182,7 +179,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
            {
                particles[i].weight *= weight;
            }
-       } 
+       }
     }
 }
 
