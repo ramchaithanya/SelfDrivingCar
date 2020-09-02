@@ -12,7 +12,7 @@ I have coded,built and ran the ./particle_filter and it was successful.Below ima
 
 I had made sure to implement actual particle filter and didnt find a way to beat the automatic grader.My code changes has been mentioned below.
 
-* number of particles of 101 has been set.
+* number of particles of 200 has been set.I started with 100 particle filters,eventhough the particle filter has passed i played around with 200 and reduced the error.
 * For each particle id,x,y,theta,weights has been initialized and added to particles vector
 * Implemented prediction function using the formula mentioned in the coursework
 * Implemented data association i.e taking the nearest prediction

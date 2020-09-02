@@ -25,9 +25,7 @@ using std::normal_distribution;
 
 void ParticleFilter::init(double x, double y, double theta, double std[]) 
 {
-  if(is_initialized)
-      return;
-  num_particles = 101;  // TODO: Set the number of particles
+  num_particles = 200;  //Set the number of particles
 
   normal_distribution<double> dist_x(0, std[0]);
   normal_distribution<double> dist_y(0, std[1]);
@@ -68,7 +66,6 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
   normal_distribution<double> dist_theta(0, std_pos[2]);
   for(int i =0;i<num_particles;i++)
   {
-      
       if(fabs(yaw_rate) < 0.00001)
       {
           yaw_rate = 0.00001;
@@ -109,7 +106,8 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
                                    const vector<LandmarkObs> &observations, 
-                                   const Map &map_landmarks) {
+                                   const Map &map_landmarks) 
+{
   /**
    *  Update the weights of each particle using a mult-variate Gaussian 
    *   distribution. You can read more about this distribution here: 
@@ -123,6 +121,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
    *   and the following is a good resource for the actual equation to implement
    *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
    */
+    // Clear the weights to avoid bad allocation and adding more particles
+    weights.clear();
     /*x_m = x_p + (cosθ * x_c)−(sinθ * y_c)
     y_m = y_p + (sinθ * x_c) +(cosθ * y_c)*/
     for (int i = 0; i < num_particles; i++) 
@@ -180,39 +180,23 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                particles[i].weight *= weight;
            }
        }
+      weights.push_back(particles[i].weight);
     }
 }
 
-void ParticleFilter::resample() {
+void ParticleFilter::resample() 
+{
   /**
-   * TODO: Resample particles with replacement with probability proportional 
+   * Resample particles with replacement with probability proportional 
    *   to their weight. 
-   * NOTE: You may find std::discrete_distribution helpful here.
+   *  You may find std::discrete_distribution helpful here.
    *   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
    */
-    vector<double> weights;
-    for(int i = 0;i<num_particles;i++)
-    {
-        weights.push_back(particles[i].weight);
-    }
-    double max_weight = *max_element(weights.begin(),weights.end());
-      // Creating distributions.
-    std::uniform_real_distribution<double> distDouble(0.0, max_weight);
-    std::uniform_int_distribution<int> distInt(0, num_particles - 1);
-    // Generating index.
-    int index = distInt(m_gen);
-    double beta = 0.0;
-    // the wheel
+    std::discrete_distribution<int> disDist(weights.begin(), weights.end());
     vector<Particle> resampledParticles;
-    for(int i = 0; i < num_particles; i++) 
+    for(int i = 0; i < num_particles; i++)
     {
-        beta += distDouble(m_gen) * 2.0;
-        while( beta > weights[index]) 
-        {
-            beta -= weights[index];
-            index = (index + 1) % num_particles;
-        }
-        resampledParticles.push_back(particles[index]);
+      resampledParticles.push_back(particles[disDist(m_gen)]);
     }
     particles = resampledParticles;
 }
