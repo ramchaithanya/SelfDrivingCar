@@ -14,6 +14,28 @@ using nlohmann::json;
 using std::string;
 using std::vector;
 
+int getObservedCarLane(int d)
+{
+   int obs_car_lane = -1;
+    switch(d)
+    {
+        case 0 ... 3:
+            obs_car_lane = 0;
+            break;
+        case 4 ... 7:
+            obs_car_lane = 1;
+            break;
+        case 8 ... 11:
+            obs_car_lane = 2;
+            break;
+        default:
+            std::cout<<"Wrong Lane"<<std::endl;
+            break;
+     }
+    return obs_car_lane;
+}
+    
+
 int main() {
   uWS::Hub h;
 
@@ -65,12 +87,14 @@ int main() {
 
       auto s = hasData(data);
 
-      if (s != "") {
+      if (s != "") 
+      {
         auto j = json::parse(s);
         
         string event = j[0].get<string>();
         
-        if (event == "telemetry") {
+        if (event == "telemetry") 
+        {
           // j[1] is the data JSON object
           
           // Main car's localization Data
@@ -91,62 +115,47 @@ int main() {
           // Sensor Fusion Data, a list of all other cars on the same side 
           //   of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
+            // Provided previous path point size.
+          int prev_size = previous_path_x.size();
 
-             // Provided previous path point size.
-            int prev_size = previous_path_x.size();
-
-            // Preventing collitions.
-            if (prev_size > 0) {
-              car_s = end_path_s;
+           // Preventing collitions.
+            if (prev_size > 0) 
+            {
+                car_s = end_path_s;
             }
 
             // Prediction : Analysing other cars positions.
             bool car_ahead = false;
             bool car_left = false;
             bool car_right = false;
-            for ( int i = 0; i < sensor_fusion.size(); i++ ) 
+            for (auto sf : sensor_fusion)
             {
-              int obs_car_lane = -1;
-              switch(static_cast<int>(sensor_fusion[i][6]))
-              {
-                  case 0 ... 3:
-                      obs_car_lane = 0;
-                      break;
-                  case 4 ... 7:
-                      obs_car_lane = 1;
-                      break;
-                  case 8 ... 11:
-                      obs_car_lane = 2;
-                      break;
-                  default:
-                      std::cout<<"Wrong Lane"<<std::endl;
-                      break;
-              }
+                int obs_car_lane = getObservedCarLane(static_cast<int>(sf[6]));
                 // Find car speed.
-                double vx = sensor_fusion[i][3];
-                double vy = sensor_fusion[i][4];
+                double vx = sf[3];
+                double vy = sf[4];
                 double check_speed = sqrt(pow(vx,2) + pow(vy,2));
-                double check_car_s = sensor_fusion[i][5];
+                double check_car_s = sf[5];
                 // Estimate car s position after executing previous trajectory.
                 check_car_s += ((double)prev_size*0.02*check_speed);
-              if((obs_car_lane == lane) &&
-                  (check_car_s > car_s) &&
-                  (( check_car_s - car_s) < 30))
-              {
-                  car_ahead = true;
-              }
-              else if ((obs_car_lane - lane == -1) &&
-                       ((car_s +30) > check_car_s ) &&
-                       ((car_s - 30) < check_car_s ))
-              {
-                  car_left = true;
-              }
-              else if ((obs_car_lane - lane == 1) &&
-                       ((car_s +30) > check_car_s ) &&
-                       ((car_s - 30) < check_car_s ))
-              {
-                  car_right = true;
-              }                
+                if((obs_car_lane == lane) &&
+                   (check_car_s > car_s) &&
+                   (( check_car_s - car_s) < 30))
+                {
+                    car_ahead = true;
+                }
+                else if ((obs_car_lane - lane == -1) &&
+                         ((car_s +30) > check_car_s ) &&
+                         ((car_s - 30) < check_car_s ))
+                {
+                    car_left = true;
+                }
+                else if ((obs_car_lane - lane == 1) &&
+                         ((car_s +30) > check_car_s ) &&
+                         ((car_s - 30) < check_car_s ))
+                {
+                    car_right = true;
+                }                
             }
 
             // Behavior : Let's see what to do.
@@ -154,16 +163,19 @@ int main() {
             const double MAX_SPEED = 49.5;
             const double MAX_ACC = .224;
             if ( car_ahead ) 
-            { // Car ahead
+            { 
+              // Car ahead
               if ( !car_left && lane > 0 ) 
               {
                 // if there is no car left and there is a left lane.
                 lane--; // Change lane left.
-              } else if ( !car_right && lane != 2 )
+              }
+              else if ( !car_right && lane != 2 )
               {
                 // if there is no car right and there is a right lane.
                 lane++; // Change lane right.
-              } else
+              } 
+              else
               {
                 speed_diff -= MAX_ACC;
               }
@@ -202,7 +214,8 @@ int main() {
 
                 ptsy.push_back(prev_car_y);
                 ptsy.push_back(car_y);
-            } else 
+            } 
+            else 
             {
                 // Use the last two points.
                 ref_x = previous_path_x[prev_size - 1];
@@ -222,7 +235,9 @@ int main() {
             // Setting up target points in the future.
             for(int i = 0;i<3;i++)
             {
-                vector<double> next_wp = getXY(car_s + (30*(i+1)), 2 + 4*lane, map_waypoints_s, map_waypoints_x, map_waypoints_y);
+                vector<double> next_wp = getXY(car_s + (30*(i+1)), 2 + 4*lane,
+                                               map_waypoints_s, map_waypoints_x, 
+                                               map_waypoints_y);
                 ptsx.push_back(next_wp[0]);
                 ptsy.push_back(next_wp[1]);
             }
@@ -253,15 +268,19 @@ int main() {
             // Calculate distance y position on 30 m ahead.
             double target_x = 30.0;
             double target_y = s(target_x);
-            double target_dist = sqrt(target_x*target_x + target_y*target_y);
+            double target_dist = sqrt(pow(target_x,2) + pow(target_y,2));
 
             double x_add_on = 0;
 
-            for( int i = 1; i < 50 - prev_size; i++ ) {
+            for( int i = 1; i < 50 - prev_size; i++ ) 
+            {
               ref_vel += speed_diff;
-              if ( ref_vel > MAX_SPEED ) {
+              if ( ref_vel > MAX_SPEED )
+              {
                 ref_vel = MAX_SPEED;
-              } else if ( ref_vel < MAX_ACC ) {
+              } 
+              else if ( ref_vel < MAX_ACC ) 
+              {
                 ref_vel = MAX_ACC;
               }
               double N = target_dist/(0.02*ref_vel/2.24);
