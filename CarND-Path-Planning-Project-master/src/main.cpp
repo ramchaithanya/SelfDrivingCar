@@ -34,6 +34,30 @@ int getObservedCarLane(int d)
      }
     return obs_car_lane;
 }
+
+CarPosition getCarPosition(int obs_car_lane,double check_car_s,double car_s,int lane)
+{
+    if((obs_car_lane == lane) &&
+       (check_car_s > car_s) &&
+       ((check_car_s - car_s) < 30))
+    {
+       return AHEAD;
+    }
+    else if ((obs_car_lane - lane == -1) &&
+             ((car_s +30) > check_car_s ) &&
+             ((car_s - 30) < check_car_s ))
+    {
+       return LEFT;
+    }
+    else if ((obs_car_lane - lane == 1) &&
+             ((car_s +30) > check_car_s ) &&
+             ((car_s - 30) < check_car_s ))
+    {
+       return RIGHT;
+    }  
+    else 
+        return UNKNOWN;
+}
     
 
 int main() {
@@ -125,9 +149,7 @@ int main() {
             }
 
             // Prediction : Analysing other cars positions.
-            bool car_ahead = false;
-            bool car_left = false;
-            bool car_right = false;
+            std::set<CarPosition> carsAround;
             for (auto sf : sensor_fusion)
             {
                 int obs_car_lane = getObservedCarLane(static_cast<int>(sf[6]));
@@ -138,39 +160,22 @@ int main() {
                 double check_car_s = sf[5];
                 // Estimate car s position after executing previous trajectory.
                 check_car_s += ((double)prev_size*0.02*check_speed);
-                if((obs_car_lane == lane) &&
-                   (check_car_s > car_s) &&
-                   (( check_car_s - car_s) < 30))
-                {
-                    car_ahead = true;
-                }
-                else if ((obs_car_lane - lane == -1) &&
-                         ((car_s +30) > check_car_s ) &&
-                         ((car_s - 30) < check_car_s ))
-                {
-                    car_left = true;
-                }
-                else if ((obs_car_lane - lane == 1) &&
-                         ((car_s +30) > check_car_s ) &&
-                         ((car_s - 30) < check_car_s ))
-                {
-                    car_right = true;
-                }                
+                carsAround.insert(getCarPosition(obs_car_lane,check_car_s,car_s,lane));           
             }
 
             // Behavior : Let's see what to do.
             double speed_diff = 0;
             const double MAX_SPEED = 49.5;
             const double MAX_ACC = .224;
-            if ( car_ahead ) 
+            if ( carsAround.find(AHEAD) != carsAround.end()) 
             { 
               // Car ahead
-              if ( !car_left && lane > 0 ) 
+              if ( carsAround.find(LEFT) == carsAround.end() && lane > 0 ) 
               {
                 // if there is no car left and there is a left lane.
                 lane--; // Change lane left.
               }
-              else if ( !car_right && lane != 2 )
+              else if ( carsAround.find(RIGHT) == carsAround.end() && lane != 2 )
               {
                 // if there is no car right and there is a right lane.
                 lane++; // Change lane right.
@@ -182,13 +187,6 @@ int main() {
             } 
             else
             {
-              if ( lane != 1 ) 
-              { // if we are not on the center lane.
-                if ( ( lane == 0 && !car_right ) || ( lane == 2 && !car_left ) ) 
-                {
-                  lane = 1; // Back to center.
-                }
-              }
               if ( ref_vel < MAX_SPEED ) 
               {
                 speed_diff += MAX_ACC;

@@ -4,10 +4,18 @@
 #include <math.h>
 #include <string>
 #include <vector>
-
+#include <set>
 // for convenience
 using std::string;
 using std::vector;
+
+enum CarPosition
+{
+  UNKNOWN,
+  AHEAD,
+  LEFT,
+  RIGHT
+};
 
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
