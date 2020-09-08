@@ -6,7 +6,7 @@ Self-Driving Car Engineer Nanodegree Program
 ###  The code compiles correctly.
 The code has compiled correctly and compilation output can be seen below.
 
-![Compilation](./Images/Compilation.png)
+![Compilation](./Images/compilation.png)
 
 ### The car is able to drive at least 4.32 miles without incident.
 
