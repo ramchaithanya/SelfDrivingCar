@@ -14,7 +14,7 @@ using nlohmann::json;
 using std::string;
 using std::vector;
 
-static const double scodMax_Speed = 49.9;
+static const double scodMax_Speed = 49.5;
 static const double scodMax_Acc = .224;
 
 int getObservedCarLane(int d)
@@ -167,7 +167,6 @@ int main() {
             }
 
             // Behavior : Let's see what to do.
-            double speed_diff = 0;
             if ( carsAround.find(AHEAD) != carsAround.end()) 
             { 
               // Car ahead
@@ -183,14 +182,14 @@ int main() {
               } 
               else
               {
-                speed_diff -= scodMax_Acc;
+                ref_vel -= scodMax_Acc;
               }
             } 
             else
             {
               if ( ref_vel < scodMax_Speed ) 
               {
-                speed_diff += scodMax_Acc;
+                ref_vel += scodMax_Acc;
               }
             }
 
@@ -273,15 +272,6 @@ int main() {
 
             for( int i = 1; i < 50 - prev_size; i++ ) 
             {
-              ref_vel += speed_diff;
-              if ( ref_vel > scodMax_Speed )
-              {
-                ref_vel = scodMax_Speed;
-              } 
-              else if ( ref_vel < scodMax_Acc ) 
-              {
-                ref_vel = scodMax_Acc;
-              }
               double N = target_dist/(0.02*ref_vel/2.24);
               double x_point = x_add_on + target_x/N;
               double y_point = s(x_point);
