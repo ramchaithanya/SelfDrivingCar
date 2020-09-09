@@ -36,7 +36,7 @@ Whenever there is a car ahead which is driving slow and there are no cars in any
 
 ### There is a reflection on how to generate paths.
 
-*After capturing Sensor fusion data in a two dimensional vector(line no 144), using a range based for loop gone through the vector,found in which lane the car is in(line no 20), calculated speed,estimated the car position(after executing previous tragectory) and using the function getCarPosition(line no 41) found the whether the car is "AHEAD","LEFT","RIGHT" and stored in a set.
+* After capturing Sensor fusion data in a two dimensional vector(line no 144), using a range based for loop gone through the vector,found in which lane the car is in(line no 20), calculated speed,estimated the car position(after executing previous tragectory) and using the function getCarPosition(line no 41) found the whether the car is "AHEAD","LEFT","RIGHT" and stored in a set.
 
 * Using the set of all the cars around checked whether to stay in the lane,go left or right or go in reduced speed so that the ego car will not collide the car ahead of it i.e if there is a car ahead either we have to go left or right or slow down.This decision is based on by checking in the set previously populated and whether lane is > 0 or lane != 2.
 
