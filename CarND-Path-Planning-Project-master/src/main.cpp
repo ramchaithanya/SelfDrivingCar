@@ -61,7 +61,32 @@ CarPosition getCarPosition(int obs_car_lane,double check_car_s,double car_s,int 
     else 
         return UNKNOWN;
 }
-    
+
+void getCarBehavior(std::set<CarPosition> carsAround,int &lane, double &ref_vel)
+{       
+    if ( carsAround.find(AHEAD) != carsAround.end()) 
+    { 
+      if ( carsAround.find(LEFT) == carsAround.end() && lane > 0 ) 
+      {
+         lane--;
+      }
+      else if ( carsAround.find(RIGHT) == carsAround.end() && lane != 2 )
+      {
+         lane++;
+      } 
+      else
+      {
+         ref_vel -= scodMax_Acc;
+      }
+     } 
+     else
+     {
+        if ( ref_vel < scodMax_Speed ) 
+        {
+           ref_vel += scodMax_Acc;
+        }
+     } 
+}
 
 int main() {
   uWS::Hub h;
@@ -142,56 +167,29 @@ int main() {
           // Sensor Fusion Data, a list of all other cars on the same side 
           //   of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
-            // Provided previous path point size.
+
           int prev_size = previous_path_x.size();
 
-           // Preventing collitions.
             if (prev_size > 0) 
             {
                 car_s = end_path_s;
             }
 
-            // Prediction : Analysing other cars positions.
             std::set<CarPosition> carsAround;
             for (auto sf : sensor_fusion)
             {
                 int obs_car_lane = getObservedCarLane(static_cast<int>(sf[6]));
-                // Find car speed.
+
                 double vx = sf[3];
                 double vy = sf[4];
                 double check_speed = sqrt(pow(vx,2) + pow(vy,2));
                 double check_car_s = sf[5];
-                // Estimate car s position after executing previous trajectory.
+
                 check_car_s += ((double)prev_size*0.02*check_speed);
                 carsAround.insert(getCarPosition(obs_car_lane,check_car_s,car_s,lane));           
             }
-
-            // Behavior : Let's see what to do.
-            if ( carsAround.find(AHEAD) != carsAround.end()) 
-            { 
-              // Car ahead
-              if ( carsAround.find(LEFT) == carsAround.end() && lane > 0 ) 
-              {
-                // if there is no car left and there is a left lane.
-                lane--; // Change lane left.
-              }
-              else if ( carsAround.find(RIGHT) == carsAround.end() && lane != 2 )
-              {
-                // if there is no car right and there is a right lane.
-                lane++; // Change lane right.
-              } 
-              else
-              {
-                ref_vel -= scodMax_Acc;
-              }
-            } 
-            else
-            {
-              if ( ref_vel < scodMax_Speed ) 
-              {
-                ref_vel += scodMax_Acc;
-              }
-            }
+            
+            getCarBehavior(carsAround,lane,ref_vel);
 
             vector<double> ptsx;
             vector<double> ptsy;
@@ -200,10 +198,8 @@ int main() {
             double ref_y = car_y;
             double ref_yaw = deg2rad(car_yaw);
 
-            // Do I have have previous points
             if ( prev_size < 2 )
             {
-                // There are not too many...
                 double prev_car_x = car_x - cos(car_yaw);
                 double prev_car_y = car_y - sin(car_yaw);
 
@@ -215,7 +211,6 @@ int main() {
             } 
             else 
             {
-                // Use the last two points.
                 ref_x = previous_path_x[prev_size - 1];
                 ref_y = previous_path_y[prev_size - 1];
 
@@ -230,7 +225,6 @@ int main() {
                 ptsy.push_back(ref_y);
             }
 
-            // Setting up target points in the future.
             for(int i = 0;i<3;i++)
             {
                 vector<double> next_wp = getXY(car_s + (30*(i+1)), 2 + 4*lane,
@@ -240,7 +234,6 @@ int main() {
                 ptsy.push_back(next_wp[1]);
             }
 
-            // Making coordinates to local car coordinates.
             for ( int i = 0; i < ptsx.size(); i++ )
             {
               double shift_x = ptsx[i] - ref_x;
@@ -250,11 +243,9 @@ int main() {
               ptsy[i] = shift_x * sin(0 - ref_yaw) + shift_y * cos(0 - ref_yaw);
             }
 
-            // Create the spline.
             tk::spline s;
             s.set_points(ptsx, ptsy);
 
-            // Output path points from previous path for continuity.
             vector<double> next_x_vals;
             vector<double> next_y_vals;
             for ( int i = 0; i < prev_size; i++ ) 
@@ -263,7 +254,6 @@ int main() {
               next_y_vals.push_back(previous_path_y[i]);
             }
 
-            // Calculate distance y position on 30 m ahead.
             double target_x = 30.0;
             double target_y = s(target_x);
             double target_dist = sqrt(pow(target_x,2) + pow(target_y,2));
