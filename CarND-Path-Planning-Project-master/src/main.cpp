@@ -44,18 +44,21 @@ CarPosition getCarPosition(int obs_car_lane,double check_car_s,double car_s,int 
        (check_car_s > car_s) &&
        ((check_car_s - car_s) < 30))
     {
+       //in the current lane a car is ahead,store it
        return AHEAD;
     }
     else if ((obs_car_lane - lane == -1) &&
-             ((car_s +30) > check_car_s ) &&
-             ((car_s - 30) < check_car_s ))
+             ((car_s - 30) < check_car_s ) &&
+             ((car_s + 30) > check_car_s ))
     {
+       //in the left lane a car is in the range,store it
        return LEFT;
     }
     else if ((obs_car_lane - lane == 1) &&
-             ((car_s +30) > check_car_s ) &&
-             ((car_s - 30) < check_car_s ))
+             ((car_s - 30) < check_car_s) &&
+             ((car_s + 30) > check_car_s ))
     {
+       //in the right lane a car is in the range,store it
        return RIGHT;
     }  
     else 
@@ -66,26 +69,20 @@ void getCarBehavior(std::set<CarPosition> carsAround,int &lane, double &ref_vel)
 {       
     if ( carsAround.find(AHEAD) != carsAround.end()) 
     { 
-      if ( carsAround.find(LEFT) == carsAround.end() && lane > 0 ) 
-      {
-         lane--;
-      }
+      if ( carsAround.find(LEFT) == carsAround.end() && lane > 0 )
+         lane--; //change to left lane
       else if ( carsAround.find(RIGHT) == carsAround.end() && lane != 2 )
-      {
-         lane++;
-      } 
+         lane++; // Change to right lane
       else
+         ref_vel -= scodMax_Acc; // no path slow down to avoid collision
+    } 
+    else
+    {
+      if ( ref_vel < scodMax_Speed ) 
       {
-         ref_vel -= scodMax_Acc;
+         ref_vel += scodMax_Acc;// no car infron keep accelerating
       }
-     } 
-     else
-     {
-        if ( ref_vel < scodMax_Speed ) 
-        {
-           ref_vel += scodMax_Acc;
-        }
-     } 
+    } 
 }
 
 int main() {
@@ -185,7 +182,7 @@ int main() {
                 double check_speed = sqrt(pow(vx,2) + pow(vy,2));
                 double check_car_s = sf[5];
 
-                check_car_s += ((double)prev_size*0.02*check_speed);
+                check_car_s += (static_cast<double>(prev_size)*0.02*check_speed);
                 carsAround.insert(getCarPosition(obs_car_lane,check_car_s,car_s,lane));           
             }
             
