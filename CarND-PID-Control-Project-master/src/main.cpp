@@ -2,12 +2,14 @@
 #include <uWS/uWS.h>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 #include "json.hpp"
 #include "PID.h"
 
 // for convenience
 using nlohmann::json;
 using std::string;
+using std::atof;
 
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
@@ -30,15 +32,19 @@ string hasData(string s) {
   return "";
 }
 
-int main() {
+int main(int argc,char *argv[]) {
   uWS::Hub h;
 
   PID pid;
-  /**
-   * TODO: Initialize the pid variable.
-   */
-
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
+  #if 0
+  pid.Init(std::stod(argv[1]),
+           std::stod(argv[2]),
+           std::stod(argv[3]));
+  #endif
+  pid.Init(-0.07 , 0 , -2.0);
+   
+  double throttle = 0.3;
+  h.onMessage([&pid,&throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -56,7 +62,9 @@ int main() {
           double cte = std::stod(j[1]["cte"].get<string>());
           double speed = std::stod(j[1]["speed"].get<string>());
           double angle = std::stod(j[1]["steering_angle"].get<string>());
-          double steer_value;
+          double topSpeed = 40.0;
+          pid.UpdateError(cte);
+          double steer_value = pid.TotalError();
           /**
            * TODO: Calculate steering value here, remember the steering value is
            *   [-1, 1].
@@ -66,7 +74,9 @@ int main() {
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
+                    <<" Angle:" <<angle
                     << std::endl;
+
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
