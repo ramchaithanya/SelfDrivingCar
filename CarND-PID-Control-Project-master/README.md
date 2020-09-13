@@ -16,8 +16,13 @@ The coefficients(Kp,Ki,Kd) chosen for proportional,Integral and Derivative are <
 
 Proportional control is equal to cross track error. If we only use Proportional control, then the steering value will be equal to cte.So in case of large cte values the car weaves a lot and will go out of track after travelling some distance.
 
+#### Only 'P' Controller
 ![P](./Data/Only_P.gif)
+
+#### Only 'I' Controller
 ![I](./Data/Only_I.gif)
+
+#### Only 'D' Controller
 ![D](./Data/Only_D.gif)
 
 ### Describe how the final hyperparameters were chosen.
