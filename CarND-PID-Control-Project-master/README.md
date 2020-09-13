@@ -8,7 +8,17 @@ Self-Driving Car Engineer Nanodegree Program
 
 ### The PID procedure follows what was taught in the lessons.
 
+My PID procedure follows what was taught in the lessons.
+In PID.cpp file i have initialized p_error,i_error,d_error with <values> respectively.
+The coefficients(Kp,Ki,Kd) chosen for proportional,Integral and Derivative are <value> respectively.The code changes can be found in main.cpp file in line number
+
 ### Describe the effect each of the P, I, D components had in your implementation.
+
+Proportional control is equal to cross track error. If we only use Proportional control, then the steering value will be equal to cte.So in case of large cte values the car weaves a lot and will go out of track after travelling some distance.
+
+![P](./Data/Only_P.gif)
+![I](./Data/Only_I.gif)
+![D](./Data/Only_D.gif)
 
 ### Describe how the final hyperparameters were chosen.
 

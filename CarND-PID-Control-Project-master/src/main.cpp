@@ -41,7 +41,7 @@ int main(int argc,char *argv[]) {
            std::stod(argv[2]),
            std::stod(argv[3]));
   #endif
-  pid.Init(-0.0999, -0.00799, -1.09999);
+  pid.Init(-0.0999, -0.00799, -1.09999); 
    
   double throttle = 0.3;
   h.onMessage([&pid,&throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
@@ -63,7 +63,7 @@ int main(int argc,char *argv[]) {
           double cte = std::stod(j[1]["cte"].get<string>());
           double speed = std::stod(j[1]["speed"].get<string>());
           double angle = std::stod(j[1]["steering_angle"].get<string>());
-          double topSpeed = 40.0;
+          double topSpeed = 35.0;
           pid.UpdateError(cte);
           double steer_value = pid.TotalError();
             
