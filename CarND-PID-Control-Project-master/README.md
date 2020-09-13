@@ -6,6 +6,10 @@ Self-Driving Car Engineer Nanodegree Program
 
 ### 1. Your code should compile.
 
+The code has compiled correctly and compilation output can be seen below.
+
+![Compilation](./Data/compilation.png)
+
 ### 2. The PID procedure follows what was taught in the lessons.
 
 My PID procedure follows what was taught in the lessons.I have continously applied correction based on PID for the cross track error received.
