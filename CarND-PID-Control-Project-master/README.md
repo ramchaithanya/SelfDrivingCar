@@ -42,7 +42,7 @@ Smaller Derivate value was not helping at all as the car was oscilating and goin
 My final hyperparameters are 
 
 
-| PID                   |     Prediction	 	|
+|     PID               |     Values    	 	|
 |:---------------------:|:---------------------:|
 | p_error        		| -0.6       			|
 | i_error    			|  0.09   				| 
