@@ -4,7 +4,7 @@
  * TODO: Complete the PID class. You may add any additional desired functions.
  */
 
-PID::PID():p_error(-0.6),i_error(0.09),d_error(0.1)
+PID::PID():p_error(0.6),i_error(0.09),d_error(0.1)
 {
 }
 
