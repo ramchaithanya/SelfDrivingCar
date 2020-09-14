@@ -36,6 +36,7 @@ string hasData(string s) {
   return "";
 }
 
+// Get what throttle value to apply based on the situation
 void getThrottleValue(double speed,
                       double &throttle,
                       double steer_value)
@@ -56,7 +57,7 @@ int main(int argc,char *argv[]) {
   uWS::Hub h;
 
   PID pid;
-  pid.Init(-0.099, -0.0022, -0.72); 
+  pid.Init(-0.099, -0.0022, -0.72); //Kp,Ki,Kd initialization
   double throttle = scodinitThrotle;
   h.onMessage([&pid,&throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -76,9 +77,9 @@ int main(int argc,char *argv[]) {
           //throttle += 0.1;
           double cte = std::stod(j[1]["cte"].get<string>());
           double speed = std::stod(j[1]["speed"].get<string>());
-          //double angle = std::stod(j[1]["steering_angle"].get<string>()); unused
-          pid.UpdateError(cte);
-          double steer_value = pid.TotalError();
+          //double angle = std::stod(j[1]["steering_angle"].get<string>()); 'unused variable'
+          pid.UpdateError(cte); // Update pid errors based on cte.
+          double steer_value = pid.TotalError(); //TotalError would be our steering value
 
           getThrottleValue(speed,throttle,steer_value);
  
