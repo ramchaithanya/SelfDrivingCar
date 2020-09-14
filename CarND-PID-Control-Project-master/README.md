@@ -63,5 +63,12 @@ With the above code changes and final hyperparameters the car is not leaving the
 
 [Evaluation Video!](https://www.youtube.com/watch?v=kU9vit10eKk)
 
+### 6. Additional Notes
+
+* I have not used Twiddle as i was able to acheive the target by finetuning the parameters.
+* I have implemented the PID controller based on the coursework and Q & A video from David Silver.
+* Additionally i have implemented getThrottleValue function to increase/decrease the throttle based on topspeed(40),steering value and maintain throttle between 0.2 - 0.8
+* As i am not using any angle value, i have commented that part of code.
+
 
 
