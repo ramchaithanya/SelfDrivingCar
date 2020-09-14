@@ -48,15 +48,18 @@ My final hyperparameters are
 
 |     PID               |     Values    	 	|
 |:---------------------:|:---------------------:|
-| p_error        		| -0.6       			|
-| i_error    			|  0.09   				| 
-| d_error       		|  0.1					|
-| p coefficient   		| -0.0999       		| 
-| i coefficient			| -0.00799          	| 
-| D coefficient			| -1.09999           	|
+| initial p_error    	|  0.6       			|
+| initial i_error   	|  0.09   				| 
+| initial d_error   	|  0.1					|
+| p coefficient   		| -0.099        		| 
+| i coefficient			| -0.0022           	| 
+| D coefficient			| -0.72             	|
 
 ### 5. The vehicle must successfully drive a lap around the track.
 
+With the above code changes and final hyperparameters the car is not leaving the drivable portion of the track.There was not instance of car driving over the ledges.The successful lap is shown below
+
+![PIDD](./Data/PID_Controller.mkv)
 
 
 

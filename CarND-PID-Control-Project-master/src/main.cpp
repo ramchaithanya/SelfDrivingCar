@@ -16,6 +16,10 @@ constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
+static const double scodinitThrotle = 0.3;
+static const double scodtopSpeed = 40.0;
+static const double scodthrottleUpdate = 0.1;
+
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
 // else the empty string "" will be returned.
@@ -32,18 +36,28 @@ string hasData(string s) {
   return "";
 }
 
+void getThrottleValue(double speed,
+                      double &throttle,
+                      double steer_value)
+{
+    if(speed > scodtopSpeed)
+        throttle -= scodthrottleUpdate;
+    else
+        throttle += scodthrottleUpdate;
+    if (fabs(steer_value) > 0.2)
+        throttle -= 0.1;
+    if (throttle <= 0.2)
+        throttle += scodthrottleUpdate;
+    if (throttle > 0.8)
+        throttle -= scodthrottleUpdate;
+}
+
 int main(int argc,char *argv[]) {
   uWS::Hub h;
 
   PID pid;
-  #if 0
-  pid.Init(std::stod(argv[1]),
-           std::stod(argv[2]),
-           std::stod(argv[3]));
-  #endif
-  // pid.Init(-0.0999, -0.00799, -1.09999);
   pid.Init(-0.099, -0.0022, -0.72); 
-  double throttle = 0.3;
+  double throttle = scodinitThrotle;
   h.onMessage([&pid,&throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -62,26 +76,15 @@ int main(int argc,char *argv[]) {
           //throttle += 0.1;
           double cte = std::stod(j[1]["cte"].get<string>());
           double speed = std::stod(j[1]["speed"].get<string>());
-          double angle = std::stod(j[1]["steering_angle"].get<string>());
-          double topSpeed = 40.0;
+          //double angle = std::stod(j[1]["steering_angle"].get<string>()); unused
           pid.UpdateError(cte);
           double steer_value = pid.TotalError();
-            
-          if(speed > topSpeed)
-              throttle -= 0.1;
-          else
-              throttle += 0.1;
-          if (fabs(steer_value) > 0.2)
-              throttle -= 0.1;
-          if (throttle <= 0.2)
-              throttle += 0.1;
-          if (throttle > 0.8)
-              throttle -= 0.1;
+
+          getThrottleValue(speed,throttle,steer_value);
  
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
                     <<" throttle: " <<throttle
                     << std::endl;
-
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
