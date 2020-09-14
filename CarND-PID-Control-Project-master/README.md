@@ -20,7 +20,7 @@ The coefficients(Kp,Ki,Kd) chosen for proportional,Integral and Derivative are <
 
 #### P Control Effect
 
-Proportional control is proprtional to cross track error but in opposite direction. If we only use Proportional control,as mentioned in the udacity coursework the car overshoots as in the car weaves a lot and will go out of track after travelling some distance.The same can be seen in the below gif.
+Proportional control is proprtional to cross track error but in opposite direction. If we only use Proportional control,as mentioned in the udacity coursework the car overshoots as in the car weaves a lot and will go out of track after travelling some distance.The same can be seen in the below gif.The only 'P' component value is set to -0.099
 
 #### Only 'P' Controller
 ![P](./Data/Only_P.gif)
@@ -28,12 +28,14 @@ Proportional control is proprtional to cross track error but in opposite directi
 #### I Control Effect
 
 Integral control is used to adress the problem systematic bias like misaligned wheels.Including 'Integral control' in PID would help in minimizing CTE.Only using Integral value will make the car runaround in circles.
+The only 'I' component value is set to -0.0022
 
 #### Only 'I' Controller
 ![I](./Data/Only_I.gif)
 
 #### D Control Effect
 Derivate control helps the car not to overshoot i.e minimizing the effect if we use only P control and inturn makes the car drive smooth along the track.If we use only D controller we can see the car moving smoothly,however going outside the track.
+The only 'D' component value is set to -0.72
 
 #### Only 'D' Controller
 ![D](./Data/Only_D.gif)
@@ -59,7 +61,7 @@ My final hyperparameters are
 
 With the above code changes and final hyperparameters the car is not leaving the drivable portion of the track.There was not instance of car driving over the ledges.The successful lap is shown below
 
-![PIDD](./Data/PID_Controller.mkv)
+[Evaluation Video!](https://www.youtube.com/watch?v=kU9vit10eKk)
 
 
 
